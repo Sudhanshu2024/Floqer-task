@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// src/App.tsx
+import React, { useState } from 'react';
+import { Layout } from 'antd';
+import MainTable from './components/MainTable';
+import LineGraph from './components/LineGraph';
+import JobDetailsTable from './components/JobDetailsTable';
+import { salaryData } from './data/salaries';
 
-function App() {
+const { Header, Content } = Layout;
+
+const App: React.FC = () => {
+  const [selectedYear, setSelectedYear] = useState<number | null>(null);
+
+  const handleRowClick = (year: number) => {
+    setSelectedYear(year);
+  };
+
+  const jobDetails = selectedYear
+    ? salaryData.find(data => data.year === selectedYear)?.jobDetails || []
+    : [];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Layout>
+      <Header style={{ color: 'white', fontSize: '20px' }}>ML Engineer Salaries Dashboard</Header>
+      <Content style={{ padding: '20px' }}>
+        <MainTable onRowClick={handleRowClick} />
+        <LineGraph />
+        {selectedYear && <JobDetailsTable jobDetails={jobDetails} />}
+      </Content>
+    </Layout>
   );
-}
+};
 
 export default App;
